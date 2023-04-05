@@ -1,28 +1,14 @@
 package ad.com.playify.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document("artists")
 public class Artist {
+    
+    @Id
     private String id;
     private String name;
-
-    public Artist(final String id, final String name){
-        this.id=id;
-        this.name=name;
-    }
-
-    public String getId() {
-        return this.id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    private String cover;
 
 }

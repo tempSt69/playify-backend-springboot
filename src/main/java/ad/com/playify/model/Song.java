@@ -7,9 +7,12 @@ public class Song {
     private Integer duration;
     private String trackUrl;
 
-    public Song(final String id, final String name){
+    public Song(final String id, final String name, final Artist artist, final Integer duration, final String trackUrl){
         this.id=id;
         this.name=name;
+        this.artist=artist;
+        this.duration=duration;
+        this.trackUrl=trackUrl;
     }
 
     public String getId() {
@@ -27,7 +30,6 @@ public class Song {
     public void setName(String name) {
         this.name = name;
     }
-
 
     public Artist getArtist() {
         return this.artist;
@@ -52,6 +54,5 @@ public class Song {
     public void setTrackUrl(String trackUrl) {
         this.trackUrl = trackUrl;
     }
-
 
 }
