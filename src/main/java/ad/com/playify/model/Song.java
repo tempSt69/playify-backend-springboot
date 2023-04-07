@@ -1,18 +1,27 @@
 package ad.com.playify.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document("songs")
 public class Song {
+
+    @Id
     private String id;
     private String name;
-    private Artist artist;
     private Integer duration;
     private String trackUrl;
 
-    public Song(final String id, final String name, final Artist artist, final Integer duration, final String trackUrl){
-        this.id=id;
-        this.name=name;
-        this.artist=artist;
-        this.duration=duration;
-        this.trackUrl=trackUrl;
+    private Artist artist;
+
+    public Song(final String id, final String name, final Artist artist, final Integer duration,
+            final String trackUrl) {
+        super();
+        this.id = id;
+        this.name = name;
+        this.artist = artist;
+        this.duration = duration;
+        this.trackUrl = trackUrl;
     }
 
     public String getId() {
