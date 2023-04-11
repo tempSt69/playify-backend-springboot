@@ -15,4 +15,8 @@ public class Song {
     private Artist artist;
     private String trackUrl;
     private Integer duration;
+
+    public void setTrackUrl(String trackUrl) {
+        this.trackUrl = trackUrl;
+    }
 }
