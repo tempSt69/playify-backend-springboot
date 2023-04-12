@@ -1,7 +1,7 @@
 package ad.com.playify.adapter.in.controller;
 
-import static org.junit.jupiter.api.DynamicTest.stream;
-
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 
 import ad.com.playify.adapter.in.utils.StorageUtils;
 import ad.com.playify.domain.entity.Song;
+import ad.com.playify.domain.entity.abstracts.StorageFile;
 import ad.com.playify.domain.port.in.SongServicePort;
 
 @RestController
@@ -35,7 +36,7 @@ public class SongController {
         return songServicePort.getAllSongs();
     }
 
-    @PostMapping
+    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity<Song> createSong(@RequestBody Song song, @RequestPart MultipartFile file) {
         try {
             Song createdSong = songServicePort.createSong(song, StorageUtils.convertMultiPartToFile(file));
@@ -53,14 +54,33 @@ public class SongController {
         }
     }
 
-    @GetMapping(value = "/{id}/stram", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @GetMapping(value = "/{id}/stream", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<StreamingResponseBody> streamSong(@PathVariable String id) {
         Song song = songServicePort.getSongById(id);
+        System.out.print(song);
+        InputStream streamObject = songServicePort.getInputStream(song.getTrackUrl());
 
-        // HttpHeaders headers = new HttpHeaders();
-        // headers.set("accept-ranges", "bytes");
-        // headers.setContentType(MediaType.valueOf(s3object.getObjectMetadata().getContentType()));
-        // headers.setContentLength(s3object.getObjectMetadata().getContentLength());
+        final StreamingResponseBody stream = outputStream -> {
+            try (streamObject) {
+                int numberOfBytesToWrite = 0;
+                byte[] data = new byte[1024];
+                while ((numberOfBytesToWrite = streamObject.read(data, 0,
+                        data.length)) != -1) {
+                    outputStream.write(data, 0, numberOfBytesToWrite);
+                }
+            } catch (IOException e) {
+                if (!e.getMessage().contains("Broken pipe")) {
+                    // ResponseEntity.ok();
+                }
+            }
+        };
+
+        StorageFile storageObject = songServicePort.getSongInfo(song.getTrackUrl());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("accept-ranges", "bytes");
+        headers.setContentType(MediaType.valueOf(storageObject.getContentType()));
+        headers.setContentLength(storageObject.getContentLength());
 
         return ResponseEntity.ok().headers(headers).body(stream);
 
