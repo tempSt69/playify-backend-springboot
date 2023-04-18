@@ -1,0 +1,16 @@
+version: '3.9'
+services:
+  player:
+    build:
+      context: ./player
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+  auth:
+    image: quay.io/keycloak/keycloak:20.0
+    command: start-dev
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    ports: 
+      - "8081:8080"
