@@ -20,8 +20,9 @@ public class App {
 			public void addCorsMappings(CorsRegistry registry) {
 				registry
 						.addMapping("/**")
-						.allowedOrigins("*")
-						.allowedMethods("PUT", "DELETE", "GET", "POST", "HEAD");
+						.allowedHeaders("Authorization", "Content-Type", "Origin", "Accept")
+						.allowedMethods("GET", "POST")
+						.allowedOrigins("*");
 			}
 
 		};

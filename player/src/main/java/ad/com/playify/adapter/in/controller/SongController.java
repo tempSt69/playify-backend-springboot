@@ -57,7 +57,6 @@ public class SongController {
     @GetMapping(value = "/{id}/stream", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<StreamingResponseBody> streamSong(@PathVariable String id) {
         Song song = songServicePort.getSongById(id);
-        System.out.print(song);
         InputStream streamObject = songServicePort.getInputStream(song.getTrackUrl());
 
         final StreamingResponseBody stream = outputStream -> {
