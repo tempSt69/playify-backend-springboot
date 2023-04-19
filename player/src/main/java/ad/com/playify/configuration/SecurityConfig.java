@@ -27,7 +27,6 @@ class SecurityConfig {
 
     String jwkSetUri = "http://localhost:8081/realms/playify/protocol/openid-connect/certs";
 
-
     SecurityConfig(KeycloakLogoutHandler keycloakLogoutHandler) {
         this.keycloakLogoutHandler = keycloakLogoutHandler;
     }
@@ -39,21 +38,19 @@ class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(authorizeRequests ->
-            authorizeRequests
+        http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
                 .requestMatchers(HttpMethod.GET).permitAll()
-                .requestMatchers(HttpMethod.POST,"*").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "*").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "*").permitAll()
                 .anyRequest()
                 .authenticated()).oauth2ResourceServer(
-                    oauth2ResourceServer -> oauth2ResourceServer.jwt(
-                            jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())
-                    )
-            );
+                        oauth2ResourceServer -> oauth2ResourceServer.jwt(
+                                jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
         http.oauth2Login()
-            .and()
-            .logout()
-            .addLogoutHandler(keycloakLogoutHandler)
-            .logoutSuccessUrl("/");
+                .and()
+                .logout()
+                .addLogoutHandler(keycloakLogoutHandler)
+                .logoutSuccessUrl("/");
         return http.build();
     }
 
@@ -73,23 +70,24 @@ class SecurityConfig {
 // @EnableWebSecurity
 // public class SecurityConfig {
 
-//     public static final String[] ENDPOINTS_WHITELIST = {
-//             "/css/**",
-//             "/artist",
-//             "/auth/**",
-//     };
-//     public static final String LOGIN_URL = "/login";
-//     public static final String LOGOUT_URL = "/logout";
-//     public static final String LOGIN_FAIL_URL = LOGIN_URL + "?error";
-//     public static final String DEFAULT_SUCCESS_URL = "/home";
-//     public static final String USERNAME = "username";
-//     public static final String PASSWORD = "password";
+// public static final String[] ENDPOINTS_WHITELIST = {
+// "/css/**",
+// "/artist",
+// "/auth/**",
+// };
+// public static final String LOGIN_URL = "/login";
+// public static final String LOGOUT_URL = "/logout";
+// public static final String LOGIN_FAIL_URL = LOGIN_URL + "?error";
+// public static final String DEFAULT_SUCCESS_URL = "/home";
+// public static final String USERNAME = "username";
+// public static final String PASSWORD = "password";
 
-//     @Bean
-//     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//         http.authorizeHttpRequests(request -> request.requestMatchers(ENDPOINTS_WHITELIST).permitAll()
-//                 .anyRequest().authenticated())
-//                 .csrf();
-//         return http.build();
-//     }
+// @Bean
+// public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+// http.authorizeHttpRequests(request ->
+// request.requestMatchers(ENDPOINTS_WHITELIST).permitAll()
+// .anyRequest().authenticated())
+// .csrf();
+// return http.build();
+// }
 // }
